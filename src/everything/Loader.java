@@ -22,9 +22,10 @@ public class Loader {
 		GL46.glBindVertexArray(vao);
 		loadAttrib(0, 2, false, positions);
 		loadAttrib(1, 3, false, colors);
+		int modelMatrixVBO = loadMatrixAttrib(2);
 		GL46.glBindVertexArray(0);
 		int ebo = loadIndices(indices);
-		return new Model(vao, ebo, indices.length);
+		return new Model(vao, ebo, indices.length, modelMatrixVBO);
 	}
 	
 	private void loadAttrib(int location, int size, boolean normalized, float[] data) {
@@ -35,6 +36,20 @@ public class Loader {
 		GL46.glBufferData(GL46.GL_ARRAY_BUFFER, dataBuffer, GL46.GL_STATIC_DRAW);
 		GL46.glVertexAttribPointer(location, size, GL46.GL_FLOAT, normalized, 0, 0);
 		GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
+	}
+	
+	private int loadMatrixAttrib(int location) {
+		int vbo = GL46.glGenBuffers();
+		vbos.add(vbo);
+		GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vbo);
+		int start = location;
+		for (int i = 0; i < 4; i++) {
+			GL46.glVertexAttribPointer(start + i, 4, GL46.GL_FLOAT, false, Float.BYTES * 16, Float.BYTES * 4 * i);
+			GL46.glVertexAttribDivisor(start + i, 1);
+			start++;
+		}
+		GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
+		return vbo;
 	}
 	
 	private int loadIndices(int[] data) {

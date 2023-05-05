@@ -22,20 +22,6 @@ public class Main {
 	
 	private Window window = new Window(WIDTH, HEIGHT, TITLE);
 	
-//	private float[] trianglePositions = {
-//		 0.0f,  0.5f,
-//		 0.5f, -0.5f,
-//		-0.5f, -0.5f
-//	};
-//	private float[] triangleColors = {
-//		1.f, 0.f, 1.f,
-//		0.f, 1.f, 1.f,
-//		1.f, 1.f, 0.f
-//	};
-//	private int[] triangleIndices = {
-//		0, 1, 2
-//	};
-	
 	private float[] quadPositions = {
 		 0.5f,  0.5f,
 		 0.5f, -0.5f,
@@ -68,12 +54,12 @@ public class Main {
 				new Vector3f(0.f, 0.f, 0.f),
 				new Vector3f(0.f, 0.f, 0.f),
 				new Vector3f(1.f, 1.f, 1.f)));
+		entities.add(new Entity(
+				new Vector3f(2.f, 0.f, 0.f),
+				new Vector3f(0.f, 0.f, 0.f),
+				new Vector3f(1.f, 1.f, 1.f)));
 		
 		while (!window.shouldClose()) {
-			
-//			entities.get(0).getRotation().add(0.2f, 0.1f, 0);
-//			entities.get(0).getPosition().add(0.01f, 0, 0);
-			
 			renderer.prepareFrame();
 			shader.bind();
 			shader.setMatrix("projView", renderer.getProjView());

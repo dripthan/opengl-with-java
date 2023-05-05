@@ -1,10 +1,12 @@
 package everything;
 
+import java.nio.FloatBuffer;
 import java.util.List;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46;
+import org.lwjgl.system.MemoryUtil;
 
 import main.Main;
 
@@ -32,15 +34,39 @@ public class Renderer {
 	}
 
 	public void renderEntities(List<Entity> entities, Model model, Shader shader) {
+		FloatBuffer memBuffer = MemoryUtil.memAllocFloat(16 * entities.size());
+		memBuffer.clear();
+		int i = 0;
+		for (Entity e : entities) {
+			Matrix4f modelMatrix = e.getModel();
+			modelMatrix.get(16 * i, memBuffer);
+			i++;
+		}
+		for (int j = 0; j < 16; j++) {
+			System.out.print(memBuffer.get(0) + " ");
+		}
+		System.out.print("\n");
+		
 		GL46.glBindVertexArray(model.getVAO());
 		GL46.glEnableVertexAttribArray(0);
 		GL46.glEnableVertexAttribArray(1);
+		GL46.glEnableVertexAttribArray(2);
+		GL46.glEnableVertexAttribArray(3);
+		GL46.glEnableVertexAttribArray(4);
+		GL46.glEnableVertexAttribArray(5);
+		
+		GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, model.getModelMatrixVBO());
+		GL46.glBufferData(GL46.GL_ARRAY_BUFFER, memBuffer, GL46.GL_DYNAMIC_DRAW);
+		GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
+		
 		GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, model.getEBO());
-		for (Entity e : entities) {
-			shader.setMatrix("model", e.getModel());
-			GL46.glDrawElements(GL46.GL_TRIANGLES, model.getNumIndices(), GL46.GL_UNSIGNED_INT, 0);
-		}
+		GL46.glDrawElementsInstanced(GL46.GL_TRIANGLES, model.getNumIndices(), GL46.GL_UNSIGNED_INT, 0, entities.size());
 		GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, 0);
+		
+		GL46.glDisableVertexAttribArray(5);
+		GL46.glDisableVertexAttribArray(4);
+		GL46.glDisableVertexAttribArray(3);
+		GL46.glDisableVertexAttribArray(2);
 		GL46.glDisableVertexAttribArray(1);
 		GL46.glDisableVertexAttribArray(0);
 		GL46.glBindVertexArray(0);
