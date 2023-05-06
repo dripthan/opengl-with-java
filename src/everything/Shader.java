@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL46;
 public class Shader {
 
 	private int program;
-	private FloatBuffer matrixBuffer;
+	private FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 	
 	public Shader(String vsSource, String fsSource) {
 		this.program = GL46.glCreateProgram();
@@ -44,7 +44,7 @@ public class Shader {
 	}
 	
 	public void setMatrix(String name, Matrix4f value) {
-		matrixBuffer = BufferUtils.createFloatBuffer(16);
+		matrixBuffer.clear();
 		value.get(matrixBuffer);
 		GL46.glUniformMatrix4fv(GL46.glGetUniformLocation(program, name), false, matrixBuffer);
 	}

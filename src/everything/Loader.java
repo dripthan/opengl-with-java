@@ -42,11 +42,9 @@ public class Loader {
 		int vbo = GL46.glGenBuffers();
 		vbos.add(vbo);
 		GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vbo);
-		int start = location;
 		for (int i = 0; i < 4; i++) {
-			GL46.glVertexAttribPointer(start + i, 4, GL46.GL_FLOAT, false, Float.BYTES * 16, Float.BYTES * 4 * i);
-			GL46.glVertexAttribDivisor(start + i, 1);
-			start++;
+			GL46.glVertexAttribPointer(location + i, 4, GL46.GL_FLOAT, false, Float.BYTES * 16, Float.BYTES * 4 * i);
+			GL46.glVertexAttribDivisor(location + i, 1);
 		}
 		GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
 		return vbo;
